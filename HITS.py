@@ -61,7 +61,7 @@ def makeAdjacencyMatrix(baseList):
 
 def findAandH(A):
     AT = A.T
-    #hw, hv = np.linalg.eig(np.matmul(A, AT))
+    # hw, hv = np.linalg.eig(np.matmul(A, AT))
     hw, hv = eig(np.matmul(A, AT), left=False, right=True)
     ma = 0
     ind = 0
@@ -71,8 +71,8 @@ def findAandH(A):
             ma = hw[i]
     h = hv[:, ind].real
 
-    print(h*h/sum(h*h))
-    print(abs(sum(h*h/sum(h*h))))
+    print(h * h / sum(h * h))
+    print(abs(sum(h * h / sum(h * h))))
 
     aw, av = eig(np.matmul(AT, A), left=False, right=True)
     ma = 0
@@ -87,12 +87,9 @@ def findAandH(A):
     print(abs(sum(a * a / sum(a * a))))
 
 
-
-
-scanFile()
-rootList = findRootSet('War')
-baseList = findBaseSet(rootList)
-A = makeAdjacencyMatrix(baseList)
-findAandH(A)
-
-
+if __name__ == '__main__':
+    scanFile()
+    rootList = findRootSet('War')
+    baseList = findBaseSet(rootList)
+    A = makeAdjacencyMatrix(baseList)
+    findAandH(A)

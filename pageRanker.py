@@ -49,12 +49,13 @@ def rightEigen(A_eigen):
     abc, At = np.linalg.eig(At)
     W, vl = eig(A_eigen, left=True, right=False)
     arr1 = vl[:, 0].real
-    print(arr1 / sum(arr1))
+    ans = arr1 / sum(arr1)
+    return ans
 
 
 def makePageRank(n, A_alpha, alpha):
     # alpha = 0.1
-    print(A_alpha)
+
     sum = 0
     # step 1 check for rows with no 1's and replace full row with 1/N's
     # step 2 divide each 1 by the number of 1's in the row
@@ -73,13 +74,12 @@ def makePageRank(n, A_alpha, alpha):
     A_alpha = A_alpha * (1 - alpha)
     A_alpha = A_alpha + (alpha) / n
 
-    print(A_alpha)
-    print("alpha is ")
-    print(alpha)
-
-    # x = powerIteration(A)
-    # print(x)
-    rightEigen(A_alpha)
+    x = powerIteration(A_alpha)
+    print("The probability transition matrix from power iteration method is: ")
+    print(x[0])
+    ans = rightEigen(A_alpha)
+    print("The probability transition matrix from eigenvector method is: ")
+    print(ans)
     # print(y)
 
 
@@ -87,12 +87,13 @@ def makePageRankAlphaZero(n, A_zero_alpha, G, k):
     ansList = []
     print(A_zero_alpha)
     if nx.is_strongly_connected(G):
-        print("strongly connectted")
+
         for i in range(0, n):
-            ansList.append(sum(A_zero_alpha[i])/k)
-        print(ansList)
+            ansList.append(sum(A_zero_alpha[i]) / k)
+        return ansList
     else:
         print("not strongly connected")
+        return
 
 
 if __name__ == '__main__':
@@ -101,7 +102,7 @@ if __name__ == '__main__':
     A, G = getInput(n, k)
     A_dummy = A
 
-    makePageRankAlphaZero(n, A, G, k)
+    ans_list = makePageRankAlphaZero(n, A, G, k)
+    print("The probability transition matrix when alpha is 0 is: ")
+    print(ans_list)
     makePageRank(n, A_dummy, 0.1)
-
-
