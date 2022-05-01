@@ -3,16 +3,13 @@ import pandas as pd
 from scipy.linalg import eig
 
 
-def getInput():
+def getInput(n, k):
     # used to take input of graph
-    A = np.array([[0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                  [0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
-                  [1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0],
-                  [0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                  [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0],
-                  [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0],
-                  [0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0],
-                  [0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0]])
+    A = np.zeros((n, n), float)
+    print("Enter the Edges:")
+    for i in range(0, k):
+        x, y = input().split(',')
+        A[int(x)-1][int(y)-1] = 1
     return A
 
 
@@ -46,27 +43,26 @@ def rightEigen(A):
     print(arr1/sum(arr1))
 
 
-
-def makePageRank():
+def makePageRank(n, k):
     alpha = 0.1
-    A = getInput()
+    A = getInput(n, k)
     sum = 0
     # step 1 check for rows with no 1's and replace full row with 1/N's
     # step 2 divide each 1 by the number of 1's in the row
-    for i in range(0, 8):
+    for i in range(0, n):
         sum = 0
-        for j in range(0, 8):
+        for j in range(0, n):
             sum += A[i][j]
         if sum == 0:
-            for j in range(0, 8):
-                A[i][j] = float(1 / np.shape(A)[0])
+            for j in range(0, n):
+                A[i][j] = float(1 / n)
         else:
-            for j in range(0, 8):
+            for j in range(0, n):
                 if A[i][j] == 1:
                     A[i][j] = float(A[i][j] / sum)
     print(A)
     A = A * (1 - alpha)
-    A = A + (alpha) / np.shape(A)[0]
+    A = A + (alpha) / n
 
     print(A)
 
@@ -76,4 +72,7 @@ def makePageRank():
     # print(y)
 
 
-makePageRank()
+if __name__ == '__main__':
+    n = int(input("Enter the number of nodes: "))
+    k = int(input("Enter the number of connections: "))
+    makePageRank(n, k)
