@@ -6,6 +6,9 @@ from scipy.linalg import eig
 
 
 def scanFile():
+    """
+    Reads the pickel files and stores the graph in a networkx object and prints it
+    """
     web_graph = nx.read_gpickle("web_graph.gpickle")
     web_graph
     node_index = 20
@@ -18,6 +21,16 @@ def scanFile():
 
 
 def findRootSet(query):
+    """
+    Finds the root set for a given query
+    Parameters
+    -----------------
+    query -  The string which whose root set is to be found
+
+    Returns
+    ---------------
+    ansList - The list of nodes in the root set
+    """
     web_graph = nx.read_gpickle("web_graph.gpickle")
     ansList = []
     for i in range(0, len(web_graph.nodes)):
@@ -29,6 +42,15 @@ def findRootSet(query):
 
 
 def findBaseSet(rootList):
+    """
+    Function to find the base set for a given root set
+    Parameters
+    ---------------
+    rootList - The list of nodes for which the base set is required
+    Returns
+    ---------------
+    baseList - The list of nodes in the base set
+    """
     baseList = []
     web_graph = nx.read_gpickle("web_graph.gpickle")
     for i in rootList:
@@ -44,6 +66,16 @@ def findBaseSet(rootList):
 
 
 def makeAdjacencyMatrix(baseList):
+    """
+    Function to convert a base set ot adjancency matrix
+    Parameters
+    -------------
+    baseList - List of nodes for which adjacency matrix needs to be found
+
+    Returns
+    -------------
+    A - adjacency matrix
+    """
     web_graph = nx.read_gpickle("web_graph.gpickle")
     A_index = {}
     A = np.zeros((len(baseList), len(baseList)), float)
