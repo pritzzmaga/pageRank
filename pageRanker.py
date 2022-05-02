@@ -6,6 +6,20 @@ import networkx as nx
 
 def getInput(n_getInput, k_getInput):
     # used to take input of graph
+    """
+    Gets input from user and makes an Adjacency Matrix
+    Parameters
+    ---------
+    n_getInput : int
+        Number of Nodes in the Graph
+    k_getInput : int
+        Number of Edges in the Graph
+
+    Returns
+    ---------
+    A : numpy array of order nxn
+        Adjacency Matrix representing a Web Graph
+    """
     G = nx.MultiDiGraph()
     A = np.zeros((n_getInput, n_getInput), float)
     print("Enter the Edges:")
@@ -23,6 +37,18 @@ def getInput(n_getInput, k_getInput):
 
 
 def powerIteration(A_powerIteration):
+    """
+    Gives the Power Iterated Answer for PageRank Algorithm
+    Parameters
+    ---------
+    A_powerIteration : Adjacency Matrix
+        The Web Graph, to find PageRank of
+
+    Returns
+    ---------
+    x : numpy array of order 1xn
+        The Probability Vector found through PowerIteration
+    """
     x = np.zeros((1, np.shape(A_powerIteration)[0]), float)
     x[0][0] = 1.0
     close = False
@@ -44,6 +70,18 @@ def powerIteration(A_powerIteration):
 
 
 def rightEigen(A_eigen):
+    """
+    Returns the Right Eigen Vector found through Linear Algebra
+    Parameters
+    ---------
+    A_eigen : Adjacency Matrix
+        The Web Graph, to find PageRank of
+
+    Returns
+    ---------
+    ans : numpy array of order 1xn
+        The Probability Vector found through Linear Algebra
+    """
     At = A_eigen.T
 
     abc, At = np.linalg.eig(At)
@@ -54,6 +92,21 @@ def rightEigen(A_eigen):
 
 
 def makePageRank(n, A_alpha, alpha):
+    """
+    Driver Function for PageRank
+    Parameters
+    ---------
+    n : int
+        The number Nodes in the PageRank Algo
+    A_alpha : Adjacency Matrix
+        The Web Graph, to find PageRank of
+    alpha : float
+        Random Teleportation Factor    
+
+    Returns
+    ---------
+        Doesn't Return but Prints the PageRanks through Power Iteration and Eigen Vector Methods
+    """
     # alpha = 0.1
 
     sum = 0
@@ -84,16 +137,34 @@ def makePageRank(n, A_alpha, alpha):
 
 
 def makePageRankAlphaZero(n, A_zero_alpha, G, k):
+    """
+    PageRank Algo With no Random Teleportaion Factor
+    Parameters
+    ---------
+    n : int
+        The number Nodes in the PageRank Algorithm
+    A_zero_alpha : Adjacency Matrix
+        The Web Graph, to find PageRank of
+    G : Adjcency Matrix
+        The Web Graph as a Digraph to check for Strong Connectivity
+    k : int
+        The Number of Edges in the PageRank Algorithm    
+
+    Returns
+    ---------
+        Doesn't Return but Prints the PageRanks with no Random Teleportation
+    """
     ansList = []
     print(A_zero_alpha)
     if nx.is_strongly_connected(G):
 
         for i in range(0, n):
             ansList.append(sum(A_zero_alpha[i]) / k)
-        return ansList
+        print("The probability transition matrix when alpha is 0 is: ")
+        print(ansList)
     else:
-        print("not strongly connected")
-        return
+        print("Not Strongly Connected")
+    return
 
 
 if __name__ == '__main__':
@@ -102,7 +173,5 @@ if __name__ == '__main__':
     A, G = getInput(n, k)
     A_dummy = A
 
-    ans_list = makePageRankAlphaZero(n, A, G, k)
-    print("The probability transition matrix when alpha is 0 is: ")
-    print(ans_list)
+    makePageRankAlphaZero(n, A, G, k)
     makePageRank(n, A_dummy, 0.1)
