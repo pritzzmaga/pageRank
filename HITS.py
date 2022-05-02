@@ -1,5 +1,6 @@
 import networkx as nx
 import numpy as np
+import re
 
 web_graph = nx.read_gpickle('web_graph.gpickle')
 
@@ -8,9 +9,9 @@ def rootSet(query):
     n = len(web_graph.nodes)
     rootset = []
     for node in web_graph.nodes:
-        nodeContent = web_graph.nodes[node]['page_content'].lower().split(", ;:")
+        nc = web_graph.nodes[node]['page_content'].lower()
+        nodeContent = re.split(' |:|,', nc)
         if query in nodeContent:
-            print(nodeContent)
             rootset.append(node)
     return rootset
 
