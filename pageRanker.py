@@ -8,6 +8,7 @@ def getInput(n_getInput, k_getInput):
     # used to take input of graph
     """
     Gets input from user and makes an Adjacency Matrix
+
     Parameters
     ---------
     n_getInput : int
@@ -39,6 +40,8 @@ def getInput(n_getInput, k_getInput):
 def powerIteration(A_powerIteration):
     """
     Gives the Power Iterated Answer for PageRank Algorithm
+
+
     Parameters
     ---------
     A_powerIteration : Adjacency Matrix
@@ -72,6 +75,8 @@ def powerIteration(A_powerIteration):
 def rightEigen(A_eigen):
     """
     Returns the Right Eigen Vector found through Linear Algebra
+
+    
     Parameters
     ---------
     A_eigen : Adjacency Matrix

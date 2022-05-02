@@ -92,6 +92,7 @@ def makeAdjacencyMatrix(baseList):
 
 
 def findAandH(A):
+    
     AT = A.T
     # hw, hv = np.linalg.eig(np.matmul(A, AT))
     hw, hv = eig(np.matmul(A, AT), left=False, right=True)
