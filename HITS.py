@@ -45,6 +45,7 @@ def makeBaseSet(rootset):
         elif edge[1] in rootset:
             if edge[0] not in baseSet:
                 baseSet.append(edge[0])
+        np.sort(baseSet)
     return baseSet
 
 
@@ -61,7 +62,8 @@ def makeAdjacencyMatrix(baseSet):
     """
     subgraph = nx.subgraph(web_graph, sorted(baseSet))
     adjacencyMatrix = nx.to_numpy_array(subgraph)
-    return adjacencyMatrix
+    print(adjacencyMatrix)
+    return adjacencyMatrix, list(subgraph.nodes)
 
 
 def findHandA(adjacencyMatrix, baseSet):
@@ -93,8 +95,8 @@ def findHandA(adjacencyMatrix, baseSet):
         HubScores.append((baseSet[i], hubValues[i]))
         AuthorityScores.append((baseSet[i], authValues[i]))
 
-    HubScores.sort(key=lambda x: x[0])
-    AuthorityScores.sort(key=lambda x: x[0])
+    HubScores.sort(key=lambda x: x[1], reverse=True)
+    AuthorityScores.sort(key=lambda x: x[1], reverse=True)
 
     print("\nHub Scores: ")
     for i in range(len(baseSet)):
@@ -112,7 +114,7 @@ query = input("Enter a query word: ")
 query = query.lower()
 rootset = rootSet(query)
 baseset = makeBaseSet(rootset)
-adj = makeAdjacencyMatrix(baseset)
+adj, listNodes = makeAdjacencyMatrix(baseset)
 print(rootset)
 print(baseset)
-findHandA(adj, baseset)
+findHandA(adj, listNodes)
