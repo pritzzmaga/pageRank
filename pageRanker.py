@@ -173,6 +173,15 @@ def makePageRankAlphaZero(n, A_zero_alpha, G, k):
 
 
 if __name__ == '__main__':
+    """
+    The Runtime of this PageRank Algorithm is given as follows:
+    ---------
+    O(k*m)
+        k:
+            Total number edges present in the graph
+        m: 
+            Maximum number of iterations to get the probability vector
+    """
     n = int(input("Enter the number of nodes: "))
     k = int(input("Enter the number of connections: "))
     A, G = getInput(n, k)

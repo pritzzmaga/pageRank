@@ -65,6 +65,16 @@ def makeAdjacencyMatrix(baseSet):
 
 
 def findHandA(adjacencyMatrix, baseSet):
+    """
+     Function to find and print the Authority and HUb scores of the nodes
+    The Runtime of this HITS Algorithm is given as follows:
+    ---------
+    O(k*m)
+        k:
+            Total number edges present in the graph
+        m: 
+            Maximum number of iterations to get the probability vector
+    """
     n = len(baseSet)
     hubValues = np.ones(n) / n
     authValues = np.ones(n) / n
@@ -95,11 +105,14 @@ def findHandA(adjacencyMatrix, baseSet):
         print("Node", AuthorityScores[i][0], " : ", AuthorityScores[i][1])
 
 
+"""
+    
+"""
 query = input("Enter a query word: ")
 query = query.lower()
 rootset = rootSet(query)
 baseset = makeBaseSet(rootset)
-adj=makeAdjacencyMatrix(baseset)
+adj = makeAdjacencyMatrix(baseset)
 print(rootset)
 print(baseset)
-findHandA(adj,baseset)
+findHandA(adj, baseset)
