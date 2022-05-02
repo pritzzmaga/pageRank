@@ -1,26 +1,10 @@
-import numpy as np
-import pandas as pd
 import networkx as nx
-import matplotlib as plt
-from scipy.linalg import eig
+import numpy as np
+
+web_graph = nx.read_gpickle('web_graph.gpickle')
 
 
-def scanFile():
-    """
-    Reads the pickel files and stores the graph in a networkx object and prints it
-    """
-    web_graph = nx.read_gpickle("web_graph.gpickle")
-    web_graph
-    node_index = 20
-    web_graph.nodes[node_index]['page_content']
-    print(web_graph[10])
-    pos = {i: web_graph.nodes[i]['pos'] for i in range(len(web_graph.nodes))}
-    print(web_graph)
-
-    print(web_graph.nodes[30]['page_content'])
-
-
-def findRootSet(query):
+def rootSet(query):
     """
     Finds the root set for a given query
     Parameters
@@ -29,100 +13,92 @@ def findRootSet(query):
 
     Returns
     ---------------
-    ansList - The list of nodes in the root set
+    rootset - The list of nodes in the root set
     """
-    web_graph = nx.read_gpickle("web_graph.gpickle")
-    ansList = []
-    for i in range(0, len(web_graph.nodes)):
-        if query.lower() in web_graph.nodes[i]['page_content'].lower():
-            ansList.append(i)
+    n = len(web_graph.nodes)
+    rootset = []
+    for node in web_graph.nodes:
+        nodeContent = web_graph.nodes[node]['page_content'].lower().split(", ;:")
+        if query in nodeContent:
+            print(nodeContent)
+            rootset.append(node)
+    return rootset
 
-    print(ansList)
-    return ansList  # this is the root set
 
-
-def findBaseSet(rootList):
+def makeBaseSet(rootset):
     """
     Function to find the base set for a given root set
     Parameters
     ---------------
-    rootList - The list of nodes for which the base set is required
+    rootset - The list of nodes for which the base set is required
     Returns
     ---------------
-    baseList - The list of nodes in the base set
+    baseSet - The list of nodes in the base set
     """
-    baseList = []
-    web_graph = nx.read_gpickle("web_graph.gpickle")
-    for i in rootList:
-        if i not in baseList:
-            baseList.append(i)
-        for j in web_graph[i]:
-            if j not in baseList:
-                baseList.append(j)
+    baseSet = list(rootset)
 
-    baseList.sort()
-    print(baseList)
-    return baseList
+    for edge in web_graph.edges:
+        if edge[0] in rootset:
+            if edge[1] not in baseSet:
+                baseSet.append(edge[1])
+        elif edge[1] in rootset:
+            if edge[0] not in baseSet:
+                baseSet.append(edge[0])
+    return baseSet
 
 
-def makeAdjacencyMatrix(baseList):
+def makeAdjacencyMatrix(baseSet):
     """
     Function to convert a base set ot adjancency matrix
     Parameters
     -------------
-    baseList - List of nodes for which adjacency matrix needs to be found
+    baseeSet - List of nodes for which adjacency matrix needs to be found
 
     Returns
     -------------
-    A - adjacency matrix
+    adjancencyMatrix - adjacency matrix
     """
-    web_graph = nx.read_gpickle("web_graph.gpickle")
-    A_index = {}
-    A = np.zeros((len(baseList), len(baseList)), float)
-    count = 0
-    for i in baseList:
-        A_index[i] = count
-        count += 1
-    for i in baseList:
-        for j in web_graph[i]:
-            if j in baseList:
-                A[A_index[i]][A_index[j]] = 1
-
-    return A
+    subgraph = nx.subgraph(web_graph, sorted(baseSet))
+    adjacencyMatrix = nx.to_numpy_array(subgraph)
+    return adjacencyMatrix
 
 
-def findAandH(A):
-    
-    AT = A.T
-    # hw, hv = np.linalg.eig(np.matmul(A, AT))
-    hw, hv = eig(np.matmul(A, AT), left=False, right=True)
-    ma = 0
-    ind = 0
-    for i in range(0, len(hw)):
-        if hw[i] > ma:
-            ind = i
-            ma = hw[i]
-    h = hv[:, ind].real
+def findHandA(adjacencyMatrix, baseSet):
+    n = len(baseSet)
+    hubValues = np.ones(n) / n
+    authValues = np.ones(n) / n
 
-    print(h * h / sum(h * h))
-    print(abs(sum(h * h / sum(h * h))))
+    for i in range(2022):
+        hubValues = np.dot(adjacencyMatrix, authValues)
+        authValues = np.dot(adjacencyMatrix.T, hubValues)
+        hubSum = sum(hubValues)
+        authSum = sum(authValues)
+        hubValues /= hubSum
+        authValues /= authSum
 
-    aw, av = eig(np.matmul(AT, A), left=False, right=True)
-    ma = 0
-    ind = 0
-    for i in range(0, len(aw)):
-        if aw[i] > ma:
-            ind = i
-            ma = aw[i]
-    a = av[:, ind].real
+    HubScores = []
+    AuthorityScores = []
+    for i in range(len(baseSet)):
+        HubScores.append((baseSet[i], hubValues[i]))
+        AuthorityScores.append((baseSet[i], authValues[i]))
 
-    print(a * a / sum(a * a))
-    print(abs(sum(a * a / sum(a * a))))
+    HubScores.sort(key=lambda x: x[0])
+    AuthorityScores.sort(key=lambda x: x[0])
+
+    print("\nHub Scores: ")
+    for i in range(len(baseSet)):
+        print("Node", HubScores[i][0], " : ", HubScores[i][1])
+
+    print("\nAuthority Scores: ")
+    for i in range(len(baseSet)):
+        print("Node", AuthorityScores[i][0], " : ", AuthorityScores[i][1])
 
 
-if __name__ == '__main__':
-    scanFile()
-    rootList = findRootSet('War')
-    baseList = findBaseSet(rootList)
-    A = makeAdjacencyMatrix(baseList)
-    findAandH(A)
+query = input("Enter a query word: ")
+query = query.lower()
+rootset = rootSet(query)
+baseset = makeBaseSet(rootset)
+adj=makeAdjacencyMatrix(baseset)
+print(rootset)
+print(baseset)
+findHandA(adj,baseset)
