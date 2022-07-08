@@ -2,7 +2,9 @@
 
 Information Retrieval project for ranking web pages using markov chains etc.
 Parth Tulsyan 2020A7PS1883H
+
 Sreeram Yerasani 2020A7PS0052H
+
 Prithvi Rajan 2020A7PS2080H
 
 ## To install dependencies :
